@@ -1,4 +1,4 @@
-package tda.rh.Entidades;
+package tda.rh.entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
