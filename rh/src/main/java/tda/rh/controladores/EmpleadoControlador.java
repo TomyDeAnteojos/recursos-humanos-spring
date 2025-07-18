@@ -9,7 +9,9 @@ import tda.rh.entidades.Empleado;
 import tda.rh.excepciones.RecursoNoEncontradoExcepcion;
 import tda.rh.servicios.ImplEmpleadoServicio;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("rh-app")
@@ -41,5 +43,31 @@ public class EmpleadoControlador {
         if(empleado == null)
             throw new RecursoNoEncontradoExcepcion("No se encontro el id: "+ id);
         return ResponseEntity.ok(empleado);
+    }
+
+    @PutMapping("/empleados/{id}")
+    public ResponseEntity<Empleado> actualizarEmpleado(
+            @PathVariable Integer id,
+            @RequestBody Empleado empleadoRecibido){
+        Empleado empleado = empleadoServicio.buscarEmpleadoPorId(id);
+        if(empleado == null)
+            throw  new RecursoNoEncontradoExcepcion("El id recibido no existe");
+        empleado.setNombre(empleadoRecibido.getNombre());
+        empleado.setDepartamento(empleadoRecibido.getDepartamento());
+        empleado.setSueldo(empleadoRecibido.getSueldo());
+        empleadoServicio.guardarEmpleado(empleado);
+        return ResponseEntity.ok(empleado);
+    }
+
+    @DeleteMapping("empleados/{id}")
+    public ResponseEntity<Map<String, Boolean>>
+    eliminarEmpleado(@PathVariable Integer id){
+        Empleado empleado = empleadoServicio.buscarEmpleadoPorId(id);
+        if(empleado == null)
+            throw new RecursoNoEncontradoExcepcion("El ID recibido no existe");
+        empleadoServicio.eliminarEmpleado(empleado);
+        Map<String, Boolean> respuesta = new HashMap<>();
+        respuesta.put("eliminado", Boolean.TRUE);
+        return ResponseEntity.ok(respuesta);
     }
 }
